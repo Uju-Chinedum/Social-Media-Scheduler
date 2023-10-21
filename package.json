@@ -1,0 +1,15 @@
+{
+  "name": "social-media-scheduler",
+  "version": "1.0.0",
+  "description": "An app that schedules post to a social media platform",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/Uju-Chinedum/Social-Media-Scheduler"
+  },
+  "author": "Uju Chinedum",
+  "license": "ISC"
+}
