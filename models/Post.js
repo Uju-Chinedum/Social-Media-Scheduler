@@ -5,6 +5,7 @@ const PostSchema = mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "User",
     required: true,
+    index: true,
   },
   content: {
     type: String,
@@ -31,7 +32,7 @@ const PostSchema = mongoose.Schema({
     required: [true, "Please enter a date for the post to be scheduled"],
   },
   scheduledTime: {
-    type: Stinq,
+    type: String,
     required: [true, "Please enter a time for the post to be scheduled"],
   },
   isPosted: {

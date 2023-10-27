@@ -9,6 +9,7 @@ const errorHandler = require("./middleware/errorHandler");
 const auth = require("./middleware/authentication")
 const authRouter = require("./routes/authRoutes");
 const postRouter = require("./routes/postRoutes")
+const userRouter = require("./routes/userRoutes")
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -33,6 +34,7 @@ app.use(
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/post", auth, postRouter);
+app.use("/api/v1/user", auth, userRouter);
 
 app.use(notFound);
 app.use(errorHandler);
