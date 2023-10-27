@@ -41,20 +41,18 @@ const login = async (req, res) => {
     throw new Unauthenticated("Incorrect Password");
   }
 
-  req.session.regenerate((err) => {
-    if (err) {
-      return next(err);
-    }
-  });
-
+  await req.session.regenerate();
   req.session.user = { email, userId: user._id };
+
   res
     .status(StatusCodes.OK)
     .json({ msg: "Login Successful", user: req.session.user });
 };
 
 const logout = async (req, res) => {
-  res.send("logout");
+  await req.session.destroy();
+
+  res.status(StatusCodes.OK).json({ msg: "Logout Successful" });
 };
 
 module.exports = { register, login, logout };
