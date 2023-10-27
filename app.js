@@ -6,7 +6,9 @@ const MongoStore = require("connect-mongo");
 const connectDB = require("./db/connect");
 const notFound = require("./middleware/notFound");
 const errorHandler = require("./middleware/errorHandler");
+const auth = require("./middleware/authentication")
 const authRouter = require("./routes/authRoutes");
+const postRouter = require("./routes/postRoutes")
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -30,6 +32,7 @@ app.use(
 );
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/post", auth, postRouter);
 
 app.use(notFound);
 app.use(errorHandler);
