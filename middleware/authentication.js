@@ -5,6 +5,7 @@ const auth = async (req, res, next) => {
     throw new Unauthenticated("Authentication Invalid");
   }
 
+  req.user = req.session.user;
   next();
 };
 
