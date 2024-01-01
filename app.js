@@ -6,10 +6,10 @@ const MongoStore = require("connect-mongo");
 const connectDB = require("./db/connect");
 const notFound = require("./middleware/notFound");
 const errorHandler = require("./middleware/errorHandler");
-const auth = require("./middleware/authentication")
+const auth = require("./middleware/authentication");
 const authRouter = require("./routes/authRoutes");
-const postRouter = require("./routes/postRoutes")
-const userRouter = require("./routes/userRoutes")
+const postRouter = require("./routes/postRoutes");
+const userRouter = require("./routes/userRoutes");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -21,12 +21,12 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: true,
-      maxAge: 86400, // 1 day in seconds
+      secure: false,
+      maxAge: 86400 * 1000, // 1 day in milliseconds
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI,
-      ttl: 86400,
+      ttl: 86400, // 1 day in seconds
       touchAfter: 2 * 3600, // 2 hours in seconds
     }),
   })
