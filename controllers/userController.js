@@ -1,13 +1,68 @@
+const { StatusCodes } = require("http-status-codes");
+const User = require("../models/User");
+const { NotFound, BadRequest } = require("../errors");
+
 const getMe = async (req, res) => {
-  res.send("get me");
+  const { userId } = req.user;
+
+  const user = await User.findOne({ _id: userId }).select(
+    "-password -confirmPassword"
+  );
+  if (!user) {
+    throw new NotFound(`No user with id: ${userId}`);
+  }
+
+  res.status(StatusCodes.OK).json(user);
 };
 
 const updateUser = async (req, res) => {
-  res.send("update user");
+  const { userId } = req.user;
+
+  const { firstName, lastName, email } = req.body;
+  if (!firstName || !lastName || !email) {
+    throw new BadRequest("Please fill all fields");
+  }
+
+  const user = await User.findOne({ _id: userId }).select(
+    "-password -confirmPassword"
+  );
+
+  user.firstName = firstName;
+  user.lastName = lastName;
+  user.email = email;
+  await user.save();
+
+  req.session.user.email = email;
+  res.status(StatusCodes.OK).json({ user: user });
+};
+
+const updatePassword = async (req, res) => {
+  const { userId } = req.user;
+
+  const { oldPassword, newPassword } = req.body;
+  if (!oldPassword || !newPassword) {
+    throw new BadRequest("Please fill all fields");
+  }
+
+  const user = await User.findOne({ _id: userId });
+
+  const isPassword = await user.comparePassword(oldPassword);
+  if (!isPassword) {
+    throw new Unauthenticated("Incorrect password");
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  res.status(StatusCodes.OK).json({ msg: "Password updated successfully" });
 };
 
 const deleteUser = async (req, res) => {
-  res.send("delete user");
+  const { userId } = req.user;
+  const user = await User.findOne({ _id: userId });
+
+  await user.deleteOne();
+  res.status(StatusCodes.OK).json({ msg: "User account deleted successfully" });
 };
 
-module.exports = { getMe, updateUser, deleteUser };
+module.exports = { getMe, updateUser, updatePassword, deleteUser };

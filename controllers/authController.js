@@ -41,12 +41,18 @@ const login = async (req, res) => {
     throw new Unauthenticated("Incorrect Password");
   }
 
-  await req.session.regenerate();
-  req.session.user = { email, userId: user._id };
+  req.session.regenerate(function (err) {
+    if (err) {
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ msg: "Session regeneration failed" });
+    }
 
-  res
-    .status(StatusCodes.OK)
-    .json({ msg: "Login Successful", user: req.session.user });
+    req.session.user = { email, userId: user._id };
+    res
+      .status(StatusCodes.OK)
+      .json({ msg: "Login Successful", user: req.session.user })
+  });
 };
 
 const logout = async (req, res) => {
