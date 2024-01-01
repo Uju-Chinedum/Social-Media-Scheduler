@@ -39,10 +39,6 @@ const PostSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  numOfPosts: {
-    type: Number,
-    default: 0,
-  },
 });
 
 module.exports = mongoose.model("Post", PostSchema);

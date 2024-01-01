@@ -32,6 +32,10 @@ const UserSchema = mongoose.Schema({
     required: [true, "Please confirm your password"],
     minlength: 8,
   },
+  numOfPosts: {
+    type: Number,
+    default: 0,
+  },
 });
 
 // Hashing Password
