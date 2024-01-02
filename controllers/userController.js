@@ -6,7 +6,7 @@ const getMe = async (req, res) => {
   const { userId } = req.user;
 
   const user = await User.findOne({ _id: userId }).select(
-    "-password -confirmPassword"
+    "-igPassword -password -confirmPassword"
   );
   if (!user) {
     throw new NotFound(`No user with id: ${userId}`);
@@ -18,21 +18,27 @@ const getMe = async (req, res) => {
 const updateUser = async (req, res) => {
   const { userId } = req.user;
 
-  const { firstName, lastName, email } = req.body;
-  if (!firstName || !lastName || !email) {
+  const { firstName, lastName, email, igUsername, igPassword } = req.body;
+  if (!firstName || !lastName || !email || igUsername || igPassword) {
     throw new BadRequest("Please fill all fields");
   }
 
   const user = await User.findOne({ _id: userId }).select(
-    "-password -confirmPassword"
+    "-igPassword -password -confirmPassword"
   );
 
   user.firstName = firstName;
   user.lastName = lastName;
   user.email = email;
+  user.username = igUsername;
+  user.password = igPassword;
+
   await user.save();
 
   req.session.user.email = email;
+  req.session.user.igUsername = igUsername;
+  req.session.user.igPassword = igPassword;
+
   res.status(StatusCodes.OK).json({ user: user });
 };
 

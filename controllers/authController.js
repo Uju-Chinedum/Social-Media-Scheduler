@@ -21,6 +21,7 @@ const register = async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      igUsername: user.igUsername,
     },
   });
 };
@@ -48,10 +49,15 @@ const login = async (req, res) => {
         .json({ msg: "Session regeneration failed" });
     }
 
-    req.session.user = { email, userId: user._id };
+    req.session.user = {
+      email,
+      userId: user._id,
+      username: user.igUsername,
+      password: user.igPassword,
+    };
     res
       .status(StatusCodes.OK)
-      .json({ msg: "Login Successful", user: req.session.user })
+      .json({ msg: "Login Successful", user: req.session.user });
   });
 };
 

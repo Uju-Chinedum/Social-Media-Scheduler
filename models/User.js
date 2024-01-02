@@ -22,6 +22,14 @@ const UserSchema = mongoose.Schema({
       message: "Please provide a valid email.",
     },
   },
+  igUsername: {
+    type: String,
+    required: [true, "Please provide your instagram username"]
+  },
+  igPassword: {
+    type: String,
+    required: [true, "Please provide your instagram password"]
+  },
   password: {
     type: String,
     required: [true, "Please provide password"],

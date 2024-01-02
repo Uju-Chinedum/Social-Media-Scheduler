@@ -1,5 +1,5 @@
-const {StatusCodes} = require("http-status-codes")
-const Post = require("../models/Post")
+const { StatusCodes } = require("http-status-codes");
+const Post = require("../models/Post");
 
 const createPost = async (req, res) => {
   res.send("create post");
