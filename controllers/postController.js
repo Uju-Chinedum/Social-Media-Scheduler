@@ -96,7 +96,26 @@ const getSinglePost = async (req, res) => {
 };
 
 const updatePost = async (req, res) => {
-  res.send("update post");
+  const {
+    body: { content, media, scheduledDate, scheduledTime },
+    user: { userId },
+    params: { id: postId },
+  } = req;
+
+  if (!content || !media || !scheduledDate || !scheduledTime) {
+    throw new BadRequest("No field can be empty");
+  }
+
+  const post = await Post.findByIdAndUpdate(
+    { _id: postId, user: userId },
+    req.body,
+    { new: true, runValidators: true }
+  );
+  if (!post) {
+    throw new NotFoundError(`No post with id ${postId}`);
+  }
+
+  res.status(StatusCodes.OK).json({ post });
 };
 
 const deletePost = async (req, res) => {
