@@ -79,7 +79,20 @@ const getAllPosts = async (req, res) => {
 };
 
 const getSinglePost = async (req, res) => {
-  const 
+  const {
+    user: { userId },
+    params: { id: postId },
+  } = req;
+
+  const post = await Post.findOne({
+    _id: postId,
+    user: userId,
+  });
+  if (!post) {
+    throw new NotFoundError(`No post with id ${postId}`);
+  }
+
+  res.status(StatusCodes.OK).json({ post });
 };
 
 const updatePost = async (req, res) => {
