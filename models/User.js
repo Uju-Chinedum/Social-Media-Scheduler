@@ -2,49 +2,52 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
-const UserSchema = mongoose.Schema({
-  firstName: {
-    type: String,
-    trim: true,
-    required: [true, "Please provide a first name"],
-  },
-  lastName: {
-    type: String,
-    trim: true,
-    required: [true, "Please provide a last name"],
-  },
-  email: {
-    type: String,
-    unique: true,
-    index: true,
-    validate: {
-      validator: validator.isEmail,
-      message: "Please provide a valid email.",
+const UserSchema = mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      trim: true,
+      required: [true, "Please provide a first name"],
+    },
+    lastName: {
+      type: String,
+      trim: true,
+      required: [true, "Please provide a last name"],
+    },
+    email: {
+      type: String,
+      unique: true,
+      index: true,
+      validate: {
+        validator: validator.isEmail,
+        message: "Please provide a valid email.",
+      },
+    },
+    igUsername: {
+      type: String,
+      required: [true, "Please provide your instagram username"],
+    },
+    igPassword: {
+      type: String,
+      required: [true, "Please provide your instagram password"],
+    },
+    password: {
+      type: String,
+      required: [true, "Please provide password"],
+      minlength: 8,
+    },
+    confirmPassword: {
+      type: String,
+      required: [true, "Please confirm your password"],
+      minlength: 8,
+    },
+    numOfPosts: {
+      type: Number,
+      default: 0,
     },
   },
-  igUsername: {
-    type: String,
-    required: [true, "Please provide your instagram username"]
-  },
-  igPassword: {
-    type: String,
-    required: [true, "Please provide your instagram password"]
-  },
-  password: {
-    type: String,
-    required: [true, "Please provide password"],
-    minlength: 8,
-  },
-  confirmPassword: {
-    type: String,
-    required: [true, "Please confirm your password"],
-    minlength: 8,
-  },
-  numOfPosts: {
-    type: Number,
-    default: 0,
-  },
-});
+  { timestamps: true }
+);
 
 // Hashing Password
 UserSchema.pre("save", async function () {
