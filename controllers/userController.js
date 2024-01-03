@@ -19,7 +19,7 @@ const updateUser = async (req, res) => {
   const { userId } = req.user;
 
   const { firstName, lastName, email, igUsername, igPassword } = req.body;
-  if (!firstName || !lastName || !email || igUsername || igPassword) {
+  if (!firstName || !lastName || !email || !igUsername || !igPassword) {
     throw new BadRequest("Please fill all fields");
   }
 
