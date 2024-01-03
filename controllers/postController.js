@@ -89,7 +89,7 @@ const getSinglePost = async (req, res) => {
     user: userId,
   });
   if (!post) {
-    throw new NotFoundError(`No post with id ${postId}`);
+    throw new NotFound(`No post with id ${postId}`);
   }
 
   res.status(StatusCodes.OK).json({ post });
@@ -112,14 +112,27 @@ const updatePost = async (req, res) => {
     { new: true, runValidators: true }
   );
   if (!post) {
-    throw new NotFoundError(`No post with id ${postId}`);
+    throw new NotFound(`No post with id ${postId}`);
   }
 
   res.status(StatusCodes.OK).json({ post });
 };
 
 const deletePost = async (req, res) => {
-  res.send("delete post");
+  const {
+    user: { userId },
+    params: { id: postId },
+  } = req;
+
+  const post = await Post.findByIdAndRemove({
+    _id: postId,
+    user: userId,
+  });
+  if (!post) {
+    throw new NotFound(`No post with id ${postId}`);
+  }
+
+  res.status(StatusCodes.OK).send();
 };
 
 module.exports = {
