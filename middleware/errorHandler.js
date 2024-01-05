@@ -2,7 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 
 const errorHandler = (err, req, res, next) => {
   let customError = {
-    statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+    status: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     message: err.message || "Something went wrong!! Please try again.",
   };
 
@@ -10,7 +10,7 @@ const errorHandler = (err, req, res, next) => {
     customError.message = Object.values(err.errors)
       .map((item) => item.message)
       .join(", ");
-    customError.statusCode = StatusCodes.BAD_REQUEST;
+    customError.status = StatusCodes.BAD_REQUEST;
   }
 
   if (err.code && err.code === 11000) {
@@ -19,15 +19,15 @@ const errorHandler = (err, req, res, next) => {
     )} is already used by a user. Please use another ${Object.keys(
       err.keyValue
     )}.`;
-    customError.statusCode = StatusCodes.BAD_REQUEST;
+    customError.status = StatusCodes.BAD_REQUEST;
   }
 
   if (err.name === "CastError") {
     customError.message = `No item found with id: ${err.value}`;
-    customError.statusCode = StatusCodes.NOT_FOUND;
+    customError.status = StatusCodes.NOT_FOUND;
   }
 
-  return res.status(customError.statusCode).json(customError);
+  return res.status(customError.status).json(customError);
 };
 
 module.exports = errorHandler;
