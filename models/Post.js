@@ -31,14 +31,17 @@ const PostSchema = mongoose.Schema(
     scheduledDate: {
       type: Date,
       required: [true, "Please enter a date for the post to be scheduled"],
+      index: true,
     },
     scheduledTime: {
       type: String,
       required: [true, "Please enter a time for the post to be scheduled"],
+      index: true,
     },
     isPosted: {
       type: Boolean,
       default: false,
+      index: true,
     },
   },
   { timestamps: true }
