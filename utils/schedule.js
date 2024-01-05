@@ -21,7 +21,6 @@ const createScheduler = async () => {
         const user = await User.findById(post.user);
         await ig.state.restore(user.igUsername);
 
-        // Handle carousels for multiple images
         if (
           post.media.length > 1 &&
           post.media.every((item) => item.type === "image")
@@ -29,20 +28,21 @@ const createScheduler = async () => {
           const mediaPaths = post.media.map((item) => item.filePath);
           await ig.publish.carousel(mediaPaths, post.content);
         } else {
-          // Handle individual media items (images or videos)
-          for (const mediaItem of post.media) {
+          const mediaPromises = post.media.map(async (mediaItem) => {
             if (mediaItem.type === "image") {
-              await ig.publish.uploadPhoto({
+              return await ig.publish.uploadPhoto({
                 filePath: mediaItem.filePath,
                 caption: post.content,
               });
             } else if (mediaItem.type === "video") {
-              await ig.publish.uploadVideo({
+              return await ig.publish.uploadVideo({
                 filePath: mediaItem.filePath,
                 caption: post.content,
               });
             }
-          }
+          });
+
+          await Promise.all(mediaPromises);
         }
 
         post.isPosted = true;
