@@ -1,35 +1,63 @@
 const schedule = require("node-schedule");
 const IgApiClient = require("instagram-private-api");
-const User = require("./models/user"); // Assuming your MongoDB model is in this path
+const Post = require("./models/post");
+const User = require("./models/user");
 
 const createScheduler = async () => {
   const ig = new IgApiClient();
   await ig.state.generateDevice({});
 
   const job = schedule.scheduleJob("* * * * *", async () => {
-    // Check for scheduled posts every minute
-    const users = await User.find({ numOfPosts: { $gt: 0 } });
+    // Check every minute
+    const now = new Date();
+    const posts = await Post.find({
+      scheduledDate: { $lte: now },
+      scheduledTime: { $lte: now.toLocaleTimeString() },
+      isPosted: false,
+    });
 
-    for (const user of users) {
+    for (const post of posts) {
       try {
-        await ig.state.restore(user.igUsername); // Restore session for each user
-        const feed = await ig.feed.timeline();
-        const lastPost = feed.items[0];
+        const user = await User.findById(post.user);
+        await ig.state.restore(user.igUsername);
 
-        if (lastPost.taken_at > user.updatedAt) {
-          // Post has been published since last update
-          user.numOfPosts--;
-          await user.save();
-
-          console.log(
-            `Posted a scheduled post for ${user.firstName} ${user.lastName}`
-          );
+        // Handle carousels for multiple images
+        if (
+          post.media.length > 1 &&
+          post.media.every((item) => item.type === "image")
+        ) {
+          const mediaPaths = post.media.map((item) => item.filePath);
+          await ig.publish.carousel(mediaPaths, post.content);
+        } else {
+          // Handle individual media items (images or videos)
+          for (const mediaItem of post.media) {
+            if (mediaItem.type === "image") {
+              await ig.publish.uploadPhoto({
+                filePath: mediaItem.filePath,
+                caption: post.content,
+              });
+            } else if (mediaItem.type === "video") {
+              await ig.publish.uploadVideo({
+                filePath: mediaItem.filePath,
+                caption: post.content,
+              });
+            }
+          }
         }
+
+        post.isPosted = true;
+        await post.save();
+        user.numOfPosts--;
+        await user.save();
+
+        console.log(
+          `Posted a scheduled post for ${user.firstName} ${user.lastName}`
+        );
       } catch (error) {
         console.error(
           `Error posting for ${user.firstName} ${user.lastName}: ${error.message}`
         );
-        // You might want to implement error handling or retry logic here
+        // Implement error handling and retry logic
       }
     }
   });
