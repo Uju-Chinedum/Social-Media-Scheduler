@@ -27,6 +27,7 @@
     "instagram-private-api": "^1.45.3",
     "joi": "^17.11.0",
     "mongoose": "^7.6.3",
+    "multer": "^1.4.5-lts.1",
     "node-schedule": "^2.1.1",
     "passport": "^0.6.0",
     "swagger-ui-express": "^5.0.0",
@@ -35,6 +36,7 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "@types/node-schedule": "^2.1.5",
     "git-commit-msg-linter": "^5.0.4",
     "nodemon": "^3.0.1"
   }
