@@ -24,7 +24,7 @@ const updateUser = async (req, res) => {
   }
 
   const user = await User.findOne({ _id: userId }).select(
-    "-igPassword -password -confirmPassword-createdAt -updatedAt -__v"
+    "-igPassword -password -confirmPassword -createdAt -updatedAt -__v"
   );
 
   user.firstName = firstName;
