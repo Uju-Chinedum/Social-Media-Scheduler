@@ -15,13 +15,16 @@ const register = async (req, res) => {
 
   const user = await User.create(req.body);
   res.status(StatusCodes.CREATED).json({
-    msg: "Registered Successfully",
-    user: {
-      _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      igUsername: user.igUsername,
+    data: {
+      status: 201,
+      message: "Registered Successfully",
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        igUsername: user.igUsername,
+      },
     },
   });
 };
@@ -55,16 +58,22 @@ const login = async (req, res) => {
       username: user.igUsername,
       password: user.igPassword,
     };
-    res
-      .status(StatusCodes.OK)
-      .json({ msg: "Login Successful", user: req.session.user });
+    res.status(StatusCodes.OK).json({
+      data: {
+        status: 200,
+        message: "Login Successful",
+        user: req.session.user,
+      },
+    });
   });
 };
 
 const logout = async (req, res) => {
   await req.session.destroy();
 
-  res.status(StatusCodes.OK).json({ msg: "Logout Successful" });
+  res
+    .status(StatusCodes.OK)
+    .json({ data: { status: 200, message: "Logout Successful" } });
 };
 
 module.exports = { register, login, logout };

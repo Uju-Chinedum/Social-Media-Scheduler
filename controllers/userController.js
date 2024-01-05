@@ -12,7 +12,7 @@ const getMe = async (req, res) => {
     throw new NotFound(`No user with id: ${userId}`);
   }
 
-  res.status(StatusCodes.OK).json(user);
+  res.status(StatusCodes.OK).json({ data: { status: 200, user } });
 };
 
 const updateUser = async (req, res) => {
@@ -39,7 +39,7 @@ const updateUser = async (req, res) => {
   req.session.user.igUsername = igUsername;
   req.session.user.igPassword = igPassword;
 
-  res.status(StatusCodes.OK).json({ user: user });
+  res.status(StatusCodes.OK).json({ data: { status: 200, user } });
 };
 
 const updatePassword = async (req, res) => {
@@ -60,7 +60,9 @@ const updatePassword = async (req, res) => {
   user.password = newPassword;
   await user.save();
 
-  res.status(StatusCodes.OK).json({ msg: "Password updated successfully" });
+  res
+    .status(StatusCodes.OK)
+    .json({ data: { status: 200, message: "Password updated successfully" } });
 };
 
 const deleteUser = async (req, res) => {
@@ -68,7 +70,9 @@ const deleteUser = async (req, res) => {
   const user = await User.findOne({ _id: userId });
 
   await user.deleteOne();
-  res.status(StatusCodes.OK).json({ msg: "User account deleted successfully" });
+  res.status(StatusCodes.OK).json({
+    data: { status: 200, message: "User account deleted successfully" },
+  });
 };
 
 module.exports = { getMe, updateUser, updatePassword, deleteUser };
