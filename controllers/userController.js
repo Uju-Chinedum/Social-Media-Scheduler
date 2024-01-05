@@ -6,7 +6,7 @@ const getMe = async (req, res) => {
   const { userId } = req.user;
 
   const user = await User.findOne({ _id: userId }).select(
-    "-igPassword -password -confirmPassword"
+    "-igPassword -password -confirmPassword -createdAt -updatedAt -__v"
   );
   if (!user) {
     throw new NotFound(`No user with id: ${userId}`);
@@ -24,14 +24,14 @@ const updateUser = async (req, res) => {
   }
 
   const user = await User.findOne({ _id: userId }).select(
-    "-igPassword -password -confirmPassword"
+    "-igPassword -password -confirmPassword-createdAt -updatedAt -__v"
   );
 
   user.firstName = firstName;
   user.lastName = lastName;
   user.email = email;
-  user.username = igUsername;
-  user.password = igPassword;
+  user.igUsername = igUsername;
+  user.igPassword = igPassword;
 
   await user.save();
 
