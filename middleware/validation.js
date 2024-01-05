@@ -12,6 +12,12 @@ const userValidationSchema = joi.object({
     "string.email": "Please provide a valid email",
     "any.required": "Email is required",
   }),
+  igUsername: joi.string().trim().required().messages({
+    "any.required": "Please provide your instagram username",
+  }),
+  igPassword: joi.string().trim().required().messages({
+    "any.required": "Please provide your instagram password",
+  }),
   password: joi.string().min(8).required().messages({
     "string.min": "Password must be at least 8 characters long",
     "any.required": "Please provide a password",
@@ -77,7 +83,7 @@ const postValidationSchema = joi.object({
     "any.required": "Please enter a time for the post to be scheduled.",
     "string.empty": "Please enter a time for the post to be scheduled.",
   }),
-  isPosted: joi.boolean(),
+  isPosted: joi.boolean().default(false),
   numOfPosts: joi.number().default(0),
 });
 
